@@ -3,7 +3,7 @@ const CLASSIFY_TIMEOUT_MS = 3000;
 
 async function classifyNote(note) {
   if (!note || !note.trim()) {
-    return { category: null, confidence: null, isUncertain: true };
+    return { category: null, confidence: null, isUncertain: true, topCandidate: null };
   }
 
   const controller = new AbortController();
@@ -26,10 +26,11 @@ async function classifyNote(note) {
       category: result.category ?? null,
       confidence: result.confidence ?? null,
       isUncertain: Boolean(result.isUncertain),
+      topCandidate: result.topCandidate ?? null,
     };
   } catch (err) {
     console.warn('classifyNote: falling back, classifier unreachable ->', err.message);
-    return { category: null, confidence: null, isUncertain: true };
+    return { category: null, confidence: null, isUncertain: true, topCandidate: null };
   } finally {
     clearTimeout(timeout);
   }

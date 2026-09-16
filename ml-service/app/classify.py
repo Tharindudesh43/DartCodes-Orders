@@ -13,7 +13,7 @@ CONFIDENCE_THRESHOLD = 0.5
 
 _pipeline = None
 
-# Load the trained pipeline from disk if it hasn't been loaded yet.
+
 def _get_pipeline():
     global _pipeline
     if _pipeline is None:
@@ -25,7 +25,6 @@ def _get_pipeline():
     return _pipeline
 
 
-# Classify a message and return its predicted category and confidence.
 def classify(message: str) -> dict:
     if not message or not message.strip():
         return {
@@ -47,7 +46,7 @@ def classify(message: str) -> dict:
     is_uncertain = best_confidence < CONFIDENCE_THRESHOLD
 
     return {
-        "category": best_category if not is_uncertain else "Uncertain",
+        "category": None if is_uncertain else best_category,
         "confidence": round(best_confidence, 4),
         "isUncertain": is_uncertain,
         "topCandidate": best_category,

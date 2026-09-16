@@ -67,6 +67,7 @@ const orderSchema = new mongoose.Schema(
       category: { type: String, default: null },
       confidence: { type: Number, default: null },
       isUncertain: { type: Boolean, default: false },
+      topCandidate: { type: String, default: null },
     },
     branch: {
       type: mongoose.Schema.Types.ObjectId,

@@ -21,6 +21,20 @@ export interface Product {
   isActive: boolean;
 }
 
+export interface SupportMessage {
+  _id: string;
+  customer: { _id: string; name: string; email: string } | string;
+  message: string;
+  classification: {
+    category: string | null;
+    confidence: number | null;
+    isUncertain: boolean;
+    topCandidate: string | null;
+  };
+  status: "open" | "resolved";
+  createdAt: string;
+}
+
 export interface StockEntry {
   _id: string;
   branch: { _id: string; name: string };
@@ -65,6 +79,7 @@ export interface Order {
     category: string | null;
     confidence: number | null;
     isUncertain: boolean;
+    topCandidate: string | null;
   };
   createdAt: string;
 }

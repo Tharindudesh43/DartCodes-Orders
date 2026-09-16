@@ -132,7 +132,7 @@ export default function NewOrderPage() {
                 <p className="font-medium text-ink">
                   Order placed — assigned to {result.order.branch?.name}.
                 </p>
-                {result.order.classification?.category && (
+                {result.order.classification?.category ? (
                   <p className="mt-1 text-ink-soft">
                     Note classified as{" "}
                     <span className="text-ink">{result.order.classification.category}</span>
@@ -140,6 +140,16 @@ export default function NewOrderPage() {
                       ` (${Math.round(result.order.classification.confidence * 100)}% confidence)`}
                     .
                   </p>
+                ) : (
+                  result.order.classification?.topCandidate && (
+                    <p className="mt-1 text-ink-soft">
+                      Note wasn&apos;t confidently categorized — possibly{" "}
+                      <span className="text-ink">
+                        {result.order.classification.topCandidate}
+                      </span>
+                      .
+                    </p>
+                  )
                 )}
               </>
             ) : (

@@ -20,6 +20,9 @@ export function Header() {
             <Link href="/orders/new" className="hover:text-ink">
               New order
             </Link>
+            <Link href="/support" className="hover:text-ink">
+              Support
+            </Link>
             {user.role === "ADMIN" && (
               <Link href="/admin/branches" className="hover:text-ink">
                 Admin

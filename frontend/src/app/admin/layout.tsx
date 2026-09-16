@@ -10,6 +10,7 @@ const TABS = [
   { href: "/admin/branches", label: "Branches" },
   { href: "/admin/products", label: "Products" },
   { href: "/admin/stock", label: "Stock" },
+  { href: "/admin/support", label: "Support inbox" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +24,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.replace("/login");
       return;
     }
-
+    // A normal user should never reach here just by typing the URL —
+    // this check runs client-side for UX, but the real enforcement is
+    // server-side: every admin API route is protected by requireAdmin
+    // middleware regardless of what the frontend shows or hides.
     if (user.role !== "ADMIN") {
       router.replace("/orders");
     }

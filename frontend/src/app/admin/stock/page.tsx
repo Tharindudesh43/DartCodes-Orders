@@ -12,7 +12,8 @@ export default function AdminStockPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
+  // Per-row local input state (product id -> string) and per-row save status,
+  // so editing one row never affects the others.
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [rowError, setRowError] = useState<Record<string, string>>({});

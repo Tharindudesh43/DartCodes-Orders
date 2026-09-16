@@ -29,7 +29,6 @@ async function createOrder(req, res) {
       return res.status(400).json({ error: 'A valid deliveryLocation (lat, lng, address) is required' });
     }
 
-    // Look up current prices to snapshot onto the order.
     const products = await Product.find({ _id: { $in: items.map((i) => i.product) } });
     if (products.length !== items.length) {
       return res.status(400).json({ error: 'One or more products were not found' });
@@ -57,6 +56,7 @@ async function createOrder(req, res) {
         category: classification.category,
         confidence: classification.confidence,
         isUncertain: classification.isUncertain,
+        topCandidate: classification.topCandidate,
       },
       branch: allocation.branch ? allocation.branch._id : null,
       status: allocation.branch ? 'allocated' : 'unfulfillable',

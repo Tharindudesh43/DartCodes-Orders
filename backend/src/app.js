@@ -9,6 +9,7 @@ const branchRoutes = require('./routes/branchRoutes');
 const productRoutes = require('./routes/productRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 
 const app = express();
 
@@ -20,8 +21,6 @@ app.use(helmet());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
   })
 );
 
@@ -47,23 +46,21 @@ const authLimiter = rateLimit({
   message: { error: 'Too many attempts. Please try again later.' },
 });
 
-
-//Authentication and rate limiting
 app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
-// Health check endpoint
+//check health of the API
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/stock', stockRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/support', supportRoutes);
 
 // Catch all 404
 app.use((req, res) => {
