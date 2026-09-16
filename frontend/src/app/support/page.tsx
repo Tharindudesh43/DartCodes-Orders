@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { SupportMessage } from "@/lib/types";
+import { StatusBadge } from "@/components/StatusBadge";
 
 export default function SupportPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -15,10 +16,19 @@ export default function SupportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SupportMessage | null>(null);
+  const [myMessages, setMyMessages] = useState<SupportMessage[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");
   }, [authLoading, user, router]);
+
+  useEffect(() => {
+    if (!user) return;
+    api
+      .get<{ messages: SupportMessage[] }>("/support")
+      .then((res) => setMyMessages(res.messages))
+      .catch(() => { });
+  }, [user, result]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -111,6 +121,33 @@ export default function SupportPage() {
             {isSubmitting ? "Sending…" : "Send message"}
           </button>
         </form>
+        {myMessages.length > 0 && (
+          <div className="mt-10">
+            <h2 className="font-display text-lg font-semibold tracking-tight">
+              Your messages
+            </h2>
+            <ul className="mt-4 flex flex-col divide-y divide-line border-t border-line">
+              {myMessages.map((m) => (
+                <li key={m._id} className="py-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span
+                      className={`border px-2 py-0.5 ${m.status === "resolved"
+                          ? "border-teal text-teal-ink"
+                          : "border-ink-soft/40 text-ink-soft"
+                        }`}
+                    >
+                      {m.status === "resolved" ? "Resolved" : "Open"}
+                    </span>
+                    <span className="text-ink-soft">
+                      {new Date(m.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-ink">{m.message}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </main>
     </div>
   );

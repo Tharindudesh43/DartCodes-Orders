@@ -12,7 +12,7 @@ const router = express.Router();
 router.use(auth);
 
 router.post('/', submitMessage);
-router.get('/', requireAdmin, listMessages);
+router.get('/', listMessages);
 router.patch('/:id', requireAdmin, updateMessageStatus);
 
 module.exports = router;

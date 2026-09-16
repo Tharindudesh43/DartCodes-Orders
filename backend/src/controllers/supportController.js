@@ -32,11 +32,15 @@ async function submitMessage(req, res) {
   }
 }
 
-// GET /api/support   (admin only - the support inbox)
+// GET /api/support   (admin: everyone's messages. customer: only their own)
 async function listMessages(req, res) {
   try {
     const { status, category } = req.query;
     const filter = {};
+
+    if (req.user.role !== 'ADMIN') {
+      filter.customer = req.user.id;
+    }
     if (status) filter.status = status;
     if (category) filter['classification.category'] = category;
 
