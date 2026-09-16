@@ -6,18 +6,15 @@ require('dotenv').config();
 const app = require('./app');
 const connectDB = require('./config/db');
 
-const PORT = process.env.PORT || 5000;
+connectDB().catch(err => {
+  console.error('Failed to connect to database:', err.message);
+});
 
-async function start() {
-  try {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error('Failed to start server:', err.message);
-    process.exit(1);
-  }
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server listening locally on port ${PORT}`);
+  });
 }
 
-start();
+module.exports = app;
