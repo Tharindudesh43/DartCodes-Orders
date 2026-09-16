@@ -3,7 +3,7 @@ dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 
 require('dotenv').config();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const connectDB = require('./config/db');
 const User = require('./models/User');
 const Branch = require('./models/Branch');
