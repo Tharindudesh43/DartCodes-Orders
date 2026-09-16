@@ -34,7 +34,8 @@ async function createOrder(req, res) {
     if (products.length !== items.length) {
       return res.status(400).json({ error: 'One or more products were not found' });
     }
-    const priceByProduct = new Map(products.map((p) => [String(p._id), p.price]));
+
+    const priceByProduct = new Map(products.map((p) => [String(p._id), p.effectivePrice]));
 
     const orderItems = items.map((i) => ({
       product: i.product,
@@ -42,7 +43,6 @@ async function createOrder(req, res) {
       priceAtOrder: priceByProduct.get(String(i.product)),
     }));
 
-    // Allocate the order to a branch and classify the note in parallel.
     const [allocation, classification] = await Promise.all([
       allocateAndReserve(orderItems, deliveryLocation),
       classifyNote(note),
@@ -73,6 +73,8 @@ async function createOrder(req, res) {
       },
     });
 
+    await order.populate('branch', 'name location');
+
     const statusCode = allocation.branch ? 201 : 200;
     return res.status(statusCode).json({
       order,
@@ -87,7 +89,7 @@ async function createOrder(req, res) {
   }
 }
 
-// GET /api/orders
+// GET /api/orders  (admin: all orders, with filters. customer: their own orders)
 async function listOrders(req, res) {
   try {
     const { status, branch, search, page = 1, limit = 20 } = req.query;
@@ -144,7 +146,7 @@ async function getOrder(req, res) {
   }
 }
 
-// PATCH /api/orders/:id/status  (admin only)
+// PATCH /api/orders/:id/status   (admin only)
 const VALID_STATUSES = ['pending', 'allocated', 'processing', 'shipped', 'cancelled', 'unfulfillable'];
 
 async function updateOrderStatus(req, res) {

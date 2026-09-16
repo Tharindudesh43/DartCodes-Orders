@@ -7,11 +7,25 @@ export interface AuthUser {
   role: Role;
 }
 
+export type DiscountType = "none" | "percentage" | "flat";
+
 export interface Product {
   _id: string;
   name: string;
   sku: string;
   price: number;
+  image: string;
+  discountType: DiscountType;
+  discountValue: number;
+  effectivePrice: number;
+  isActive: boolean;
+}
+
+export interface StockEntry {
+  _id: string;
+  branch: { _id: string; name: string };
+  product: { _id: string; name: string; sku: string };
+  quantity: number;
 }
 
 export interface Branch {

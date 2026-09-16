@@ -171,7 +171,8 @@ export default function NewOrderPage() {
                       </option>
                       {products.map((p) => (
                         <option key={p._id} value={p._id}>
-                          {p.name} — Rs. {p.price}
+                          {p.name} — Rs. {p.effectivePrice}
+                          {p.discountType !== "none" ? ` (was Rs. ${p.price})` : ""}
                         </option>
                       ))}
                     </select>
