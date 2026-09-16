@@ -20,7 +20,7 @@ function validateDiscount(discountType, discountValue, price) {
   return null;
 }
 
-// POST /api/products (admin)
+// POST /api/products   (admin)
 async function createProduct(req, res) {
   try {
     const { name, sku, price, image, discountType, discountValue } = req.body;
@@ -51,7 +51,7 @@ async function createProduct(req, res) {
   }
 }
 
-// PATCH /api/products/:id (admin)
+// PATCH /api/products/:id   (admin)
 async function updateProduct(req, res) {
   try {
     const { name, sku, price, image, discountType, discountValue, isActive } = req.body;
