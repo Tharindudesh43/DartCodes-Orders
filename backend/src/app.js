@@ -1,0 +1,71 @@
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+
+const authRoutes = require('./routes/authRoutes');
+const branchRoutes = require('./routes/branchRoutes');
+const productRoutes = require('./routes/productRoutes');
+const stockRoutes = require('./routes/stockRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+
+const app = express();
+
+app.set('trust proxy', 1);
+
+// Sets a standard set of protective HTTP headers
+app.use(helmet());
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || '*',
+  })
+);
+
+// Bounded body size
+app.use(express.json({ limit: '10kb' }));
+
+app.use(mongoSanitize());
+
+// General API rate limit
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Tighter limit specifically on auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many attempts. Please try again later.' },
+});
+
+
+//Authentication and rate limiting
+app.use('/api/', generalLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/stock', stockRoutes);
+app.use('/api/orders', orderRoutes);
+
+// Catch all 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+module.exports = app;

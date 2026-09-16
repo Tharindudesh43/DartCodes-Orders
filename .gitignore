@@ -1,0 +1,31 @@
+# FRONTEND
+/frontend/node_modules
+/frontend/.next/
+/frontend/out/
+/frontend/build
+/frontend/coverage
+/frontend/.env*
+/frontend/.vercel
+npm-debug.log*
+
+# BACKEND
+/backend/node_modules
+/backend/coverage
+/backend/.env*
+/backend/.env*.local
+/backend/.env.example
+
+
+# ML PREDICTION
+/ml-service/__pycache__/
+/ml-service/venv/
+/ml-service/env/
+/ml-service/.env*
+/ml-service/*.pyc
+/ml-service/.env
+
+# GENERAL / OS
+.DS_Store
+*.pem
+.vscode/
+.idea/
