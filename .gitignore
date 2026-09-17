@@ -27,5 +27,6 @@ npm-debug.log*
 # GENERAL / OS
 .DS_Store
 *.pem
-.vscode/
 .idea/
+config.bat
+node_modules
