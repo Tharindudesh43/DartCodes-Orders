@@ -13,7 +13,6 @@ npm-debug.log*
 /backend/coverage
 /backend/.env*
 /backend/.env*.local
-/backend/.env.example
 
 
 # ML PREDICTION
@@ -23,6 +22,7 @@ npm-debug.log*
 /ml-service/.env*
 /ml-service/*.pyc
 /ml-service/.env
+/ml-service/__pycache__/
 
 # GENERAL / OS
 .DS_Store

@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const { allocateAndReserve, releaseAllocation } = require('../services/allocationService');
 const { classifyNote } = require('../services/classificationService');
 
-// POST /api/orders
+//POST /api/orders
 async function createOrder(req, res) {
   try {
     const { items, deliveryLocation, note } = req.body;
@@ -89,7 +89,7 @@ async function createOrder(req, res) {
   }
 }
 
-// GET /api/orders  (admin: all orders, with filters. customer: their own orders)
+//GET /api/orders  (admin: all orders, with filters. customer: their own orders)
 async function listOrders(req, res) {
   try {
     const { status, branch, search, page = 1, limit = 20 } = req.query;
@@ -125,7 +125,7 @@ async function listOrders(req, res) {
   }
 }
 
-// GET /api/orders/:id
+//GET /api/orders/:id
 async function getOrder(req, res) {
   try {
     const order = await Order.findById(req.params.id)
@@ -146,7 +146,7 @@ async function getOrder(req, res) {
   }
 }
 
-// PATCH /api/orders/:id/status   (admin only)
+//PATCH /api/orders/:id/status   (admin only)
 const VALID_STATUSES = ['pending', 'allocated', 'processing', 'shipped', 'cancelled', 'unfulfillable'];
 
 async function updateOrderStatus(req, res) {

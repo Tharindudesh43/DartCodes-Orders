@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const BranchStock = require('../models/BranchStock');
 
-// PUT /api/stock (admin)
+//PUT /api/stock (admin)
 async function setStock(req, res) {
   try {
     const { branch, product, quantity } = req.body;
@@ -27,7 +27,7 @@ async function setStock(req, res) {
   }
 }
 
-// GET /api/stock?branch=...
+//GET /api/stock?branch=...
 async function listStock(req, res) {
   try {
     const { branch } = req.query;

@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { Order, OrderStatus } from "@/lib/types";
 import { LoadingScreen } from "@/components/Loading";
+import { Pagination } from "@/components/Pagination";
 import { Footer } from "@/components/Footer";
 
 const STATUS_FILTERS: Array<OrderStatus | "all"> = [
@@ -25,12 +26,15 @@ export default function OrdersPage() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
+  const PAGE_SIZE = 10;
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [total, setTotal] = useState(0);
   const [status, setStatus] = useState<OrderStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");
@@ -43,6 +47,8 @@ export default function OrdersPage() {
     const params = new URLSearchParams();
     if (status !== "all") params.set("status", status);
     if (search.trim()) params.set("search", search.trim());
+    params.set("page", String(page));
+    params.set("limit", String(PAGE_SIZE));
 
     api
       .get<{ orders: Order[]; total: number }>(`/orders?${params.toString()}`)
@@ -63,7 +69,12 @@ export default function OrdersPage() {
     return () => {
       cancelled = true;
     };
-  }, [user, status, search]);
+  }, [user, status, search, page]);
+
+
+  useEffect(() => {
+    setPage(1);
+  }, [status, search]);
 
   if (authLoading || !user) return <LoadingScreen />;
 
@@ -92,11 +103,10 @@ export default function OrdersPage() {
               <button
                 key={s}
                 onClick={() => setStatus(s)}
-                className={`-mb-px border-b-2 px-2.5 py-2 capitalize transition-colors ${
-                  status === s
-                    ? "border-teal text-ink"
-                    : "border-transparent text-ink-soft hover:text-ink"
-                }`}
+                className={`-mb-px border-b-2 px-2.5 py-2 capitalize transition-colors ${status === s
+                  ? "border-teal text-ink"
+                  : "border-transparent text-ink-soft hover:text-ink"
+                  }`}
               >
                 {s}
               </button>
@@ -128,43 +138,64 @@ export default function OrdersPage() {
             </Link>
           </div>
         ) : (
-          <ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
+          <><ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
             {orders.map((order) => (
-              <li key={order._id} className="flex items-center justify-between gap-4 py-4">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
+              <li
+                key={order._id}
+                className="group flex flex-col justify-between gap-4 rounded-xl border border-line bg-white p-5 shadow-sm transition-all hover:border-ink/20 hover:shadow-md sm:flex-row sm:items-center m-1"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex items-center gap-3">
                     <StatusBadge status={order.status} />
-                    <span className="text-sm text-ink-soft">
-                      {new Date(order.createdAt).toLocaleString()}
-                    </span>
+                    <time className="text-xs font-medium text-ink-soft">
+                      {new Intl.DateTimeFormat("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      }).format(new Date(order.createdAt))}
+                    </time>
                   </div>
-                  <p className="mt-1 truncate text-sm text-ink">
+
+                  <p className="truncate text-sm font-medium text-ink">
                     {order.items
-                      .map((i) =>
-                        typeof i.product === "string"
-                          ? `${i.quantity}x item`
-                          : `${i.quantity}x ${i.product.name}`
+                      .map((i) => typeof i.product === "string"
+                        ? `${i.quantity}x item`
+                        : `${i.quantity}x ${i.product.name}`
                       )
                       .join(", ")}
                   </p>
-                  <p className="mt-0.5 text-xs text-ink-soft">
-                    {order.branch ? order.branch.name : "No branch assigned"}
-                    {order.classification?.category &&
-                      ` \u00b7 ${order.classification.category}`}
-                  </p>
+
+                  <div className="mt-1.5 flex items-center gap-2 text-xs text-ink-soft">
+                    <span>{order.branch ? order.branch.name : "No branch assigned"}</span>
+                    {order.classification?.category && (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-ink/20" aria-hidden="true" />
+                        <span className="capitalize">{order.classification.category}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <span className="shrink-0 font-display text-sm tabular-nums text-ink">
-                  Rs.{" "}
-                  {order.items
-                    .reduce((sum, i) => sum + i.priceAtOrder * i.quantity, 0)
-                    .toLocaleString()}
-                </span>
+
+                <div className="shrink-0 pt-2 sm:pt-0 sm:text-right border-t border-line sm:border-0 mt-3 sm:mt-0">
+                  <span className="font-display text-base font-semibold tabular-nums tracking-tight text-ink">
+                    <span className="mr-0.5 text-xs font-medium text-ink-soft">Rs.</span>
+                    {order.items
+                      .reduce((sum, i) => sum + i.priceAtOrder * i.quantity, 0)
+                      .toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
+          <Pagination
+            page={page}
+            totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
+            onPageChange={setPage}
+          /></>
         )}
       </main>
-      <Footer />
+      <Footer/>
     </div>
   );
 }

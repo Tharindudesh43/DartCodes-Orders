@@ -35,7 +35,6 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Visible keyboard focus everywhere, not just default outline */
 :focus-visible {
   outline: 2px solid var(--teal);
   outline-offset: 2px;
@@ -76,4 +75,11 @@ h1, h2, h3, .font-display {
   border-top-color: var(--teal);
   border-radius: 9999px;
   animation: spin 0.7s linear infinite;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
 }

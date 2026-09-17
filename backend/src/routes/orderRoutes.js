@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-// All order routes require a logged-in user.
+//All order routes require a logged in user.
 router.use(auth);
 
 router.post('/', createOrder);

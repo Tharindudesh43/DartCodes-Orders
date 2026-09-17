@@ -267,7 +267,7 @@ export default function NewOrderPage() {
               Note <span className="normal-case text-ink-soft/70">(optional)</span>
             </h2>
             <p className="mt-1 text-sm text-ink-soft">
-              Mention a payment, delivery, or account issue here and we&apos;ll route it to the right team.
+              Mention a payment, delivery or account issue here and we&apos;ll route it to the right team.
             </p>
             <textarea
               value={note}
@@ -290,7 +290,7 @@ export default function NewOrderPage() {
           </button>
         </form>
       </main>
-      <Footer />
+      <Footer/>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 const Branch = require('../models/Branch');
 
-// POST /api/branches (admin)
+//POST /api/branches (admin)
 async function createBranch(req, res) {
   try {
     const { name, location, maxCapacity } = req.body;
@@ -15,7 +15,7 @@ async function createBranch(req, res) {
   }
 }
 
-// GET /api/branches
+//GET /api/branches
 async function listBranches(req, res) {
   try {
     const branches = await Branch.find().sort({ name: 1 });
@@ -26,7 +26,7 @@ async function listBranches(req, res) {
   }
 }
 
-// PATCH /api/branches/:id (admin)
+//PATCH /api/branches/:id (admin)
 async function updateBranch(req, res) {
   try {
     const { name, location, isActive, maxCapacity } = req.body;

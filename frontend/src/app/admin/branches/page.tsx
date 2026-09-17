@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Branch } from "@/lib/types";
 import { LoadingInline } from "@/components/Loading";
+import { Pagination } from "@/components/Pagination";
 
 type FormState = {
   name: string;
@@ -16,6 +17,8 @@ type FormState = {
 const EMPTY_FORM: FormState = { name: "", lat: "", lng: "", address: "", maxCapacity: "20" };
 
 export default function AdminBranchesPage() {
+  const PAGE_SIZE = 8;
+  const [page, setPage] = useState(1);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +30,9 @@ export default function AdminBranchesPage() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<FormState>(EMPTY_FORM);
+
+
+  const pageItems = branches.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function load() {
     api
@@ -185,88 +191,86 @@ export default function AdminBranchesPage() {
       {isLoading ? (
         <LoadingInline />
       ) : (
-        <ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
-          {branches.map((b) => (
-            <li key={b._id} className="py-4">
-              {editingId === b._id ? (
-                <div className="flex flex-col gap-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      className="input"
-                      value={editForm.name}
-                      onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    />
-                    <input
-                      className="input"
-                      type="number"
-                      min={1}
-                      value={editForm.maxCapacity}
-                      onChange={(e) => setEditForm({ ...editForm, maxCapacity: e.target.value })}
-                    />
-                    <input
-                      className="input"
-                      type="number"
-                      step="any"
-                      value={editForm.lat}
-                      onChange={(e) => setEditForm({ ...editForm, lat: e.target.value })}
-                    />
-                    <input
-                      className="input"
-                      type="number"
-                      step="any"
-                      value={editForm.lng}
-                      onChange={(e) => setEditForm({ ...editForm, lng: e.target.value })}
-                    />
-                    <input
-                      className="input col-span-2"
-                      placeholder="Address"
-                      value={editForm.address}
-                      onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                    />
+        <><ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
+            {branches.map((b) => (
+              <li key={b._id} className="py-4">
+                {editingId === b._id ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        className="input"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
+                      <input
+                        className="input"
+                        type="number"
+                        min={1}
+                        value={editForm.maxCapacity}
+                        onChange={(e) => setEditForm({ ...editForm, maxCapacity: e.target.value })} />
+                      <input
+                        className="input"
+                        type="number"
+                        step="any"
+                        value={editForm.lat}
+                        onChange={(e) => setEditForm({ ...editForm, lat: e.target.value })} />
+                      <input
+                        className="input"
+                        type="number"
+                        step="any"
+                        value={editForm.lng}
+                        onChange={(e) => setEditForm({ ...editForm, lng: e.target.value })} />
+                      <input
+                        className="input col-span-2"
+                        placeholder="Address"
+                        value={editForm.address}
+                        onChange={(e) => setEditForm({ ...editForm, address: e.target.value })} />
+                    </div>
+                    {formError && <p className="text-sm text-danger">{formError}</p>}
+                    <div className="flex gap-2">
+                      <button
+                        className="btn-primary"
+                        disabled={isSaving}
+                        onClick={() => saveEdit(b._id)}
+                      >
+                        {isSaving ? "Saving…" : "Save"}
+                      </button>
+                      <button className="btn-secondary" onClick={() => setEditingId(null)}>
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                  {formError && <p className="text-sm text-danger">{formError}</p>}
-                  <div className="flex gap-2">
-                    <button
-                      className="btn-primary"
-                      disabled={isSaving}
-                      onClick={() => saveEdit(b._id)}
-                    >
-                      {isSaving ? "Saving…" : "Save"}
-                    </button>
-                    <button className="btn-secondary" onClick={() => setEditingId(null)}>
-                      Cancel
-                    </button>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-ink">
+                        {b.name}{" "}
+                        {!b.isActive && (
+                          <span className="ml-1 text-xs font-normal text-ink-soft">(inactive)</span>
+                        )}
+                      </p>
+                      <p className="text-xs text-ink-soft">
+                        {b.location.address || `${b.location.lat}, ${b.location.lng}`}
+                      </p>
+                    </div>
+                    <div className="text-right text-sm text-ink-soft tabular-nums">
+                      load {b.currentLoad}/{b.maxCapacity}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button className="btn-secondary" onClick={() => startEdit(b)}>
+                        Edit
+                      </button>
+                      <button className="btn-danger" onClick={() => toggleActive(b)}>
+                        {b.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-ink">
-                      {b.name}{" "}
-                      {!b.isActive && (
-                        <span className="ml-1 text-xs font-normal text-ink-soft">(inactive)</span>
-                      )}
-                    </p>
-                    <p className="text-xs text-ink-soft">
-                      {b.location.address || `${b.location.lat}, ${b.location.lng}`}
-                    </p>
-                  </div>
-                  <div className="text-right text-sm text-ink-soft tabular-nums">
-                    load {b.currentLoad}/{b.maxCapacity}
-                  </div>
-                  <div className="flex shrink-0 gap-2">
-                    <button className="btn-secondary" onClick={() => startEdit(b)}>
-                      Edit
-                    </button>
-                    <button className="btn-danger" onClick={() => toggleActive(b)}>
-                      {b.isActive ? "Deactivate" : "Activate"}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+                )}
+              </li>
+            ))}
+          </ul><Pagination
+              page={page}
+              totalPages={Math.max(1, Math.ceil(branches.length / PAGE_SIZE))}
+              onPageChange={setPage} /></>
       )}
     </div>
   );

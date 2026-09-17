@@ -1,7 +1,7 @@
 const SupportMessage = require('../models/SupportMessage');
 const { classifyNote } = require('../services/classificationService');
 
-// POST /api/support
+//POST /api/support
 async function submitMessage(req, res) {
   try {
     const { message } = req.body;
@@ -32,10 +32,10 @@ async function submitMessage(req, res) {
   }
 }
 
-// GET /api/support   (admin: everyone's messages. customer: only their own)
+//GET /api/support   (admin: everyone's messages. customer: only their own)
 async function listMessages(req, res) {
   try {
-    const { status, category } = req.query;
+    const { status, category, page = 1, limit = 10 } = req.query;
     const filter = {};
 
     if (req.user.role !== 'ADMIN') {
@@ -44,18 +44,24 @@ async function listMessages(req, res) {
     if (status) filter.status = status;
     if (category) filter['classification.category'] = category;
 
-    const messages = await SupportMessage.find(filter)
-      .populate('customer', 'name email')
-      .sort({ createdAt: -1 });
+    const skip = (Number(page) - 1) * Number(limit);
+    const [messages, total] = await Promise.all([
+      SupportMessage.find(filter)
+        .populate('customer', 'name email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit)),
+      SupportMessage.countDocuments(filter),
+    ]);
 
-    return res.json({ messages });
+    return res.json({ messages, total, page: Number(page), limit: Number(limit) });
   } catch (err) {
     console.error('listMessages error:', err);
     return res.status(500).json({ error: 'Something went wrong fetching messages' });
   }
 }
 
-// PATCH /api/support/:id   (admin only - mark resolved/open)
+//PATCH /api/support/:id   (admin only - mark resolved/open)
 async function updateMessageStatus(req, res) {
   try {
     const { status } = req.body;

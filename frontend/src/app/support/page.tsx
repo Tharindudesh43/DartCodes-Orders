@@ -6,8 +6,8 @@ import { Header } from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { SupportMessage } from "@/lib/types";
-import { StatusBadge } from "@/components/StatusBadge";
 import { LoadingScreen } from "@/components/Loading";
+import { Footer } from "@/components/Footer";
 
 export default function SupportPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -60,17 +60,16 @@ export default function SupportPage() {
     <div className="min-h-screen">
       <Header />
       <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">
-          Contact support
+        <h1 className="font-display text-2xl font-bold tracking-tight">
+          Contact Support
         </h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Tell us what&apos;s going on — we&apos;ll route it to the right team.
+          Need help ? Let's get it to the right experts.
         </p>
-
         {result && (
           <div className="mt-6 border-l-2 border-teal bg-white p-4 text-sm">
             <p className="font-medium text-ink">
-              Message sent — thanks, we&apos;ve got it.
+              Request submitted. Our team will review it shortly.
             </p>
             {result.classification.category && !result.classification.isUncertain ? (
               <p className="mt-1 text-ink-soft">
@@ -82,15 +81,14 @@ export default function SupportPage() {
               </p>
             ) : (
               <p className="mt-1 text-ink-soft">
-                We weren&apos;t confident enough to auto-categorize this one
-                {result.classification.topCandidate && (
+                Unable to auto categorize.{" "}
+                {result.classification.topCandidate ? (
                   <>
-                    {" "}
-                    — possibly{" "}
-                    <span className="text-ink">{result.classification.topCandidate}</span>
+                    It appears to match <span className="text-ink font-medium">{result.classification.topCandidate}</span>, but a team member will process it directly.
                   </>
+                ) : (
+                  "A team member will process this directly."
                 )}
-                . A person will read it directly.
               </p>
             )}
           </div>
@@ -99,12 +97,12 @@ export default function SupportPage() {
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="text-ink-soft">
-              What&apos;s the issue? (payment, delivery, refund, account, or anything else)
+              Please specify the issue (payment, delivery, refund, etc.)
             </span>
             <textarea
               rows={5}
               className="input resize-none"
-              placeholder="e.g. My payment was deducted but the order isn't showing…"
+              placeholder="e.g : My payment went through, but the order isn't showing up..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               maxLength={1000}
@@ -123,33 +121,59 @@ export default function SupportPage() {
           </button>
         </form>
         {myMessages.length > 0 && (
-          <div className="mt-10">
+          <div className="mt-15">
             <h2 className="font-display text-lg font-semibold tracking-tight">
               Your messages
             </h2>
             <ul className="mt-4 flex flex-col divide-y divide-line border-t border-line">
-              {myMessages.map((m) => (
-                <li key={m._id} className="py-3">
-                  <div className="flex items-center gap-2 text-xs">
-                    <span
-                      className={`border px-2 py-0.5 ${m.status === "resolved"
-                          ? "border-teal text-teal-ink"
-                          : "border-ink-soft/40 text-ink-soft"
-                        }`}
-                    >
-                      {m.status === "resolved" ? "Resolved" : "Open"}
-                    </span>
-                    <span className="text-ink-soft">
-                      {new Date(m.createdAt).toLocaleString()}
+              {myMessages.length > 0 && (
+                <div className="mt-12">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
+                      Your messages
+                    </h2>
+                    <span className="rounded-full bg-ink/5 px-2.5 py-0.5 text-xs font-medium text-ink-soft">
+                      {myMessages.length} {myMessages.length === 1 ? "message" : "messages"}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-ink">{m.message}</p>
-                </li>
-              ))}
+
+                  <ul className="flex flex-col gap-3">
+                    {myMessages.map((m) => (
+                      <li
+                        key={m._id}
+                        className="group rounded-xl border border-line bg-white p-4 shadow-sm transition-all hover:border-ink/20 hover:shadow-md"
+                      >
+                        <div className="mb-2 flex items-center justify-between">
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${m.status === "resolved"
+                                ? "bg-teal/10 text-teal-ink ring-1 ring-inset ring-teal/20"
+                                : "bg-ink/5 text-ink-soft ring-1 ring-inset ring-line"
+                              }`}
+                          >
+                            {m.status === "resolved" ? "Resolved" : "Open"}
+                          </span>
+                          <time className="text-xs text-ink-soft">
+                            {new Intl.DateTimeFormat("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            }).format(new Date(m.createdAt))}
+                          </time>
+                        </div>
+                        <p className="text-sm leading-relaxed text-ink line-clamp-3">
+                          {m.message}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </ul>
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

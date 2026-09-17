@@ -4,21 +4,28 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { SupportMessage } from "@/lib/types";
 import { LoadingInline } from "@/components/Loading";
-import { Footer } from "@/components/Footer";
+import { Pagination } from "@/components/Pagination";
 
 export default function AdminSupportPage() {
   const [messages, setMessages] = useState<SupportMessage[]>([]);
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "resolved">("open");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+
 
   function load() {
+    const params = new URLSearchParams();
+    if (statusFilter !== "all") params.set("status", statusFilter);
+    params.set("page", String(page));
+    params.set("limit", "10");
+
     api
-      .get<{ messages: SupportMessage[] }>(
-        statusFilter === "all" ? "/support" : `/support?status=${statusFilter}`
-      )
+      .get<{ messages: SupportMessage[]; total: number }>(`/support?${params.toString()}`)
       .then((res) => {
         setMessages(res.messages);
+        setTotal(res.total);
         setError(null);
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : "Couldn't load messages."))
@@ -27,6 +34,10 @@ export default function AdminSupportPage() {
 
   useEffect(() => {
     load();
+  }, [statusFilter, page]);
+
+  useEffect(() => {
+    setPage(1);
   }, [statusFilter]);
 
   async function toggleStatus(m: SupportMessage) {
@@ -50,8 +61,8 @@ export default function AdminSupportPage() {
               key={s}
               onClick={() => setStatusFilter(s)}
               className={`border px-2.5 py-1 capitalize transition-colors ${statusFilter === s
-                  ? "border-teal text-ink"
-                  : "border-line text-ink-soft hover:text-ink"
+                ? "border-teal text-ink"
+                : "border-line text-ink-soft hover:text-ink"
                 }`}
             >
               {s}
@@ -67,7 +78,7 @@ export default function AdminSupportPage() {
       ) : messages.length === 0 ? (
         <p className="mt-8 text-sm text-ink-soft">No messages here.</p>
       ) : (
-        <ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
+        <><ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
           {messages.map((m) => (
             <li key={m._id} className="py-4">
               <div className="flex items-start justify-between gap-4">
@@ -101,8 +112,9 @@ export default function AdminSupportPage() {
             </li>
           ))}
         </ul>
+        <Pagination page={page} totalPages={Math.max(1, Math.ceil(total / 10))} onPageChange={setPage} />
+        </>
       )}
-      <Footer />
     </div>
   );
 }

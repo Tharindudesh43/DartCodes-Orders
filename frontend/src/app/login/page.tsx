@@ -4,6 +4,8 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { ApiError } from "@/lib/api";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -34,7 +36,9 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6 py-12">
+      <>
+      <Header />  
+      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6 py-12">
       <h1 className="font-display text-2xl font-semibold tracking-tight">
         DartCodes <span className="text-teal">Orders</span>
       </h1>
@@ -49,10 +53,8 @@ export default function LoginPage() {
             onClick={() => {
               setMode(m);
               setError(null);
-            }}
-            className={`-mb-px border-b-2 px-3 py-2 transition-colors ${
-              mode === m ? "border-teal text-ink" : "border-transparent text-ink-soft hover:text-ink"
-            }`}
+            } }
+            className={`-mb-px border-b-2 px-3 py-2 transition-colors ${mode === m ? "border-teal text-ink" : "border-transparent text-ink-soft hover:text-ink"}`}
           >
             {m === "login" ? "Sign in" : "Register"}
           </button>
@@ -67,8 +69,7 @@ export default function LoginPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="input"
-              autoComplete="name"
-            />
+              autoComplete="name" />
           </Field>
         )}
         <Field label="Email">
@@ -78,8 +79,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input"
-            autoComplete="email"
-          />
+            autoComplete="email" />
         </Field>
         <Field label="Password">
           <input
@@ -89,8 +89,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input"
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-          />
+            autoComplete={mode === "login" ? "current-password" : "new-password"} />
         </Field>
 
         {error && (
@@ -104,6 +103,8 @@ export default function LoginPage() {
         </button>
       </form>
     </main>
+    <Footer/>
+    </>
   );
 }
 

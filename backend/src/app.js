@@ -15,21 +15,24 @@ const app = express();
 
 app.set('trust proxy', 1);
 
-// Sets a standard set of protective HTTP headers
+//Sets a standard set of protective HTTP headers
 app.use(helmet());
 
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || '*',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   })
 );
 
-// Bounded body size
+//Bounded body size
 app.use(express.json({ limit: '10kb' }));
 
 app.use(mongoSanitize());
 
-// General API rate limit
+//General API rate limit
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
@@ -37,7 +40,7 @@ const generalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Tighter limit specifically on auth endpoints
+//Tighter limit specifically on auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
@@ -62,7 +65,7 @@ app.use('/api/stock', stockRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/support', supportRoutes);
 
-// Catch all 404
+//Catch all 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
