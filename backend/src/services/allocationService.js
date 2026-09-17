@@ -48,6 +48,9 @@ function stockHealthScore(stockByProduct, orderItems) {
     const available = stockByProduct.get(String(item.product)) || 0;
     return Math.min(available / item.quantity, 3) / 3;
   });
+
+  console.log("Stock health ratios: ", ratios);
+  console.log("Stock health score: ", ratios.reduce((sum, r) => sum + r, 0) / ratios.length);
   return ratios.reduce((sum, r) => sum + r, 0) / ratios.length;
 }
 
@@ -66,6 +69,8 @@ function scoreAndPickBranch(eligibleBranches, orderItems, deliveryLocation) {
     const stock = stockHealthScore(stockByProduct, orderItems);
     const workload = workloadScore(branch);
 
+    console.log(`Branch ${branch.name} - Proximity: ${proximity.toFixed(3)}, Stock: ${stock.toFixed(3)}, Workload: ${workload.toFixed(3)}`);
+
     const score =
       WEIGHTS.proximity * proximity + WEIGHTS.stockHealth * stock + WEIGHTS.workload * workload;
 
@@ -82,12 +87,15 @@ function scoreAndPickBranch(eligibleBranches, orderItems, deliveryLocation) {
 
 
 async function allocateAndReserve(orderItems, deliveryLocation) {
+ 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     const eligible = await getEligibleBranches(orderItems, session);
+
     const { branch, scored } = scoreAndPickBranch(eligible, orderItems, deliveryLocation);
+
 
     if (!branch) {
       await session.abortTransaction();

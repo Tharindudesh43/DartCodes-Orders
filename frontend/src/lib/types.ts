@@ -52,7 +52,7 @@ export interface Branch {
 }
 
 export interface OrderItemInput {
-  product: string; // product id
+  product: string;
   quantity: number;
 }
 

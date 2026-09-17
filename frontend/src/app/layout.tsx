@@ -17,7 +17,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "DartCodes Orders",
-  description: "Smart order allocation — place and track branch orders.",
+  description: "Smart order allocation - place and track branch orders.",
 };
 
 export default function RootLayout({
