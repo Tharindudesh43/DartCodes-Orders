@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { Order, OrderStatus } from "@/lib/types";
 import { LoadingScreen } from "@/components/Loading";
+import { Footer } from "@/components/Footer";
 
 const STATUS_FILTERS: Array<OrderStatus | "all"> = [
   "all",
@@ -163,6 +164,7 @@ export default function OrdersPage() {
           </ul>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

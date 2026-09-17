@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { Product, Order } from "@/lib/types";
 import { LoadingScreen } from "@/components/Loading";
+import { Footer } from "@/components/Footer";
 
 interface LineItem {
   product: string;
@@ -289,6 +290,7 @@ export default function NewOrderPage() {
           </button>
         </form>
       </main>
+      <Footer />
     </div>
   );
 }

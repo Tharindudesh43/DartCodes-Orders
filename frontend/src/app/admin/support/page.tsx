@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { SupportMessage } from "@/lib/types";
 import { LoadingInline } from "@/components/Loading";
+import { Footer } from "@/components/Footer";
 
 export default function AdminSupportPage() {
   const [messages, setMessages] = useState<SupportMessage[]>([]);
@@ -26,7 +27,6 @@ export default function AdminSupportPage() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter]);
 
   async function toggleStatus(m: SupportMessage) {
@@ -49,11 +49,10 @@ export default function AdminSupportPage() {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`border px-2.5 py-1 capitalize transition-colors ${
-                statusFilter === s
+              className={`border px-2.5 py-1 capitalize transition-colors ${statusFilter === s
                   ? "border-teal text-ink"
                   : "border-line text-ink-soft hover:text-ink"
-              }`}
+                }`}
             >
               {s}
             </button>
@@ -103,6 +102,7 @@ export default function AdminSupportPage() {
           ))}
         </ul>
       )}
+      <Footer />
     </div>
   );
 }

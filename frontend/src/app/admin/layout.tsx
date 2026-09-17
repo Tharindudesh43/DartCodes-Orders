@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
 import { LoadingScreen } from "@/components/Loading";
+import { Footer } from "@/components/Footer";
 
 const TABS = [
   { href: "/admin/branches", label: "Branches" },
@@ -55,6 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
         <div className="mt-6">{children}</div>
       </main>
+       <Footer />
     </div>
   );
 }
