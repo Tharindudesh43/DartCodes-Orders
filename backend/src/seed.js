@@ -8,6 +8,8 @@ const User = require('./models/User');
 const Branch = require('./models/Branch');
 const Product = require('./models/Product');
 const BranchStock = require('./models/BranchStock');
+const Order = require('./models/Order');
+const SupportMessage = require('./models/SupportMessage');
 
 async function seed() {
   await connectDB();
@@ -18,6 +20,8 @@ async function seed() {
     Branch.deleteMany({}),
     Product.deleteMany({}),
     BranchStock.deleteMany({}),
+    Order.deleteMany({}),
+    SupportMessage.deleteMany({}),
   ]);
 
   console.log('Creating admin user...');
