@@ -6,10 +6,10 @@ the DartCodes Software Engineer Intern technical assessment.
 
 ## Live links
 
-- **GitHub:** https://github.com/Tharindudesh43/DartCodes-Orders
-- **Frontend:** _add your deployed URL here_
-- **Backend API:** _add your deployed URL here_
-- **ML service:** _add your deployed URL here (if deployed)_
+- **GitHub:** https://github.com/Tharindudesh43/DartCodes-Orders.git
+- **Frontend:** https://dartcodes-orders-frontend.vercel.app
+- **Backend API:** https://dartcodes-order-backend.vercel.app/api/health
+- **ML service:** https://ml-service-cyan.vercel.app/health
 
 ## Technologies used
 
