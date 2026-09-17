@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { SupportMessage } from "@/lib/types";
+import { LoadingInline } from "@/components/Loading";
 
 export default function AdminSupportPage() {
   const [messages, setMessages] = useState<SupportMessage[]>([]);
@@ -63,7 +64,7 @@ export default function AdminSupportPage() {
       {error && <p className="mt-4 text-sm text-danger">{error}</p>}
 
       {isLoading ? (
-        <p className="mt-8 text-sm text-ink-soft">Loading…</p>
+        <LoadingInline />
       ) : messages.length === 0 ? (
         <p className="mt-8 text-sm text-ink-soft">No messages here.</p>
       ) : (

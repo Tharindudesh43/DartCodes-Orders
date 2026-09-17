@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
+import { LoadingScreen } from "@/components/Loading";
 
 const TABS = [
   { href: "/admin/branches", label: "Branches" },
@@ -24,16 +25,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.replace("/login");
       return;
     }
-    // A normal user should never reach here just by typing the URL —
-    // this check runs client-side for UX, but the real enforcement is
-    // server-side: every admin API route is protected by requireAdmin
-    // middleware regardless of what the frontend shows or hides.
+
     if (user.role !== "ADMIN") {
       router.replace("/orders");
     }
   }, [user, isLoading, router]);
 
-  if (isLoading || !user || user.role !== "ADMIN") return null;
+  if (isLoading || !user || user.role !== "ADMIN") return <LoadingScreen />;
 
   return (
     <div className="min-h-screen">

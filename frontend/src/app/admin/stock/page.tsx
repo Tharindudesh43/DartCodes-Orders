@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Branch, Product, StockEntry } from "@/lib/types";
+import { LoadingInline } from "@/components/Loading";
 
 export default function AdminStockPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -12,8 +13,6 @@ export default function AdminStockPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Per-row local input state (product id -> string) and per-row save status,
-  // so editing one row never affects the others.
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [rowError, setRowError] = useState<Record<string, string>>({});
@@ -78,7 +77,7 @@ export default function AdminStockPage() {
     }
   }
 
-  if (isLoading) return <p className="text-sm text-ink-soft">Loading…</p>;
+  if (isLoading) return <LoadingInline />;
 
   if (branches.length === 0) {
     return (

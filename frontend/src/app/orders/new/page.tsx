@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { Product, Order } from "@/lib/types";
+import { LoadingScreen } from "@/components/Loading";
 
 interface LineItem {
   product: string;
@@ -110,7 +111,7 @@ export default function NewOrderPage() {
     }
   }
 
-  if (authLoading || !user) return null;
+  if (authLoading || !user) return <LoadingScreen />;
 
   return (
     <div className="min-h-screen">

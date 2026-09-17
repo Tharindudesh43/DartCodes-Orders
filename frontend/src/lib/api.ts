@@ -1,11 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-// The backend issues a single short-lived (1h) JWT rather than a
-// refresh-token pair (see backend README for the reasoning). Storing it
-// in localStorage is the simplest approach and fine for an assessment
-// project like this one, but it is readable by any script on the page —
-// worth naming as a known trade-off if asked about it in the interview.
-// A production system would prefer an httpOnly cookie instead.
 const TOKEN_KEY = "dartcodes_token";
 
 export function getToken(): string | null {

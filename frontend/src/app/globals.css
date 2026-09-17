@@ -9,6 +9,7 @@
   --teal-ink: #7e5a1e;
   --amber: #c97a1f;
   --danger: #b3402f;
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -49,15 +50,30 @@ h1, h2, h3, .font-display {
 
 @layer components {
   .input {
-    @apply rounded-none border border-line bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-teal;
+    @apply rounded-[var(--radius)] border border-line bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-teal;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center bg-teal px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-ink disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-[var(--radius)] bg-teal px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-ink disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-[var(--radius)] border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center border border-danger bg-white px-3 py-1.5 text-xs font-medium text-danger transition-colors hover:bg-danger hover:text-white disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-[var(--radius)] border border-danger bg-white px-3 py-1.5 text-xs font-medium text-danger transition-colors hover:bg-danger hover:text-white disabled:cursor-not-allowed disabled:opacity-50;
   }
+  .card {
+    @apply rounded-[var(--radius)] border border-line bg-white;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--line);
+  border-top-color: var(--teal);
+  border-radius: 9999px;
+  animation: spin 0.7s linear infinite;
 }

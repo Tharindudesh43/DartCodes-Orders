@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { api, ApiError } from "@/lib/api";
 import type { DiscountType, Product } from "@/lib/types";
+import { LoadingInline } from "@/components/Loading";
 
 type FormState = {
   name: string;
@@ -133,7 +134,7 @@ export default function AdminProductsPage() {
       </div>
 
       {showCreate && (
-        <form onSubmit={handleCreate} className="mt-4 border border-line bg-white p-5">
+      <form onSubmit={handleCreate} className="mt-4 rounded-[var(--radius)] border border-line bg-white p-5">
           <div className="grid grid-cols-2 gap-4">
             <label className="flex flex-col gap-1.5 text-sm">
               <span className="text-ink-soft">Name</span>
@@ -214,7 +215,7 @@ export default function AdminProductsPage() {
       {error && <p className="mt-4 text-sm text-danger">{error}</p>}
 
       {isLoading ? (
-        <p className="mt-8 text-sm text-ink-soft">Loading…</p>
+        <LoadingInline />
       ) : (
         <ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
           {products.map((p) => (
@@ -287,11 +288,11 @@ export default function AdminProductsPage() {
                       width={48}
                       height={48}
                       unoptimized
-                      className="h-12 w-12 shrink-0 rounded-none border border-line object-cover"
+                      className="h-12 w-12 shrink-0 rounded-[var(--radius)] border border-line object-cover"
                     />
                   ) : (
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-dashed border-line text-xs text-ink-soft">
-                      No image
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius)] border border-dashed border-line text-xs text-ink-soft">
+                      Empty
                     </div>
                   )}
                   <div className="min-w-0 flex-1">

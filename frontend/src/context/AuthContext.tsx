@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const token = getToken();
-    if (!token) return; // isLoading already initialized to false above
+    if (!token) return;
 
     api
       .get<{ user: AuthUser }>("/auth/me")

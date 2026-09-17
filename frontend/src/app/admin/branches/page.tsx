@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Branch } from "@/lib/types";
+import { LoadingInline } from "@/components/Loading";
 
 type FormState = {
   name: string;
@@ -120,7 +121,7 @@ export default function AdminBranchesPage() {
       </div>
 
       {showCreate && (
-        <form onSubmit={handleCreate} className="mt-4 border border-line bg-white p-5">
+        <form onSubmit={handleCreate} className="mt-4 rounded-[var(--radius)] border border-line bg-white p-5">
           <div className="grid grid-cols-2 gap-4">
             <label className="flex flex-col gap-1.5 text-sm">
               <span className="text-ink-soft">Name</span>
@@ -182,7 +183,7 @@ export default function AdminBranchesPage() {
       {error && <p className="mt-4 text-sm text-danger">{error}</p>}
 
       {isLoading ? (
-        <p className="mt-8 text-sm text-ink-soft">Loading…</p>
+        <LoadingInline />
       ) : (
         <ul className="mt-6 flex flex-col divide-y divide-line border-t border-line">
           {branches.map((b) => (

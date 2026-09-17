@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { useAuth } from "@/context/AuthContext";
 import { api, ApiError } from "@/lib/api";
 import type { Order, OrderStatus } from "@/lib/types";
+import { LoadingScreen } from "@/components/Loading";
 
 const STATUS_FILTERS: Array<OrderStatus | "all"> = [
   "all",
@@ -63,7 +64,7 @@ export default function OrdersPage() {
     };
   }, [user, status, search]);
 
-  if (authLoading || !user) return null;
+  if (authLoading || !user) return <LoadingScreen />;
 
   return (
     <div className="min-h-screen">
