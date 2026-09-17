@@ -79,9 +79,9 @@ export default function OrdersPage() {
   if (authLoading || !user) return <LoadingScreen />;
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mx-auto max-w-3xl px-6 py-10">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
         <div className="flex items-baseline justify-between">
           <div>
             <h1 className="font-display text-2xl font-semibold tracking-tight">
